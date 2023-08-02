@@ -26,41 +26,43 @@ export default function CheckboxList() {
   };
 
   return (
-    <List sx={{ width: '100%', maxWidth: 560, bgcolor: 'background.paper' }}>
-      {[0, 1, 2, 3].map((value) => {
-        const labelId = `checkbox-list-label-${value}`;
+    
+      <div style={{ width: '100%', maxWidth: 960 }}>
+        <List sx={{ bgcolor: 'background.paper' }}>
+          {[0, 1, 2, 3].map((value, indx) => {
+            const labelId = `checkbox-list-label-${value}`;
 
-        return (
-          <React.Fragment>
-          <ListItem
-            key={value}
-            secondaryAction={
-              <IconButton edge="end" aria-label="comments">
-                <Button variant="contained" href="#contained-buttons">
-                  Link
-                </Button>
-              </IconButton>
-            }
-            disablePadding
-          >
-            
-            <ListItemButton role={undefined} onClick={handleToggle(value)}>
-              <ListItemIcon>
-                <Checkbox
-                  edge="start"
-                  checked={checked.indexOf(value) !== -1}
-                  tabIndex={-1}
-                  disableRipple
-                  inputProps={{ 'aria-labelledby': labelId }}
-                />
-              </ListItemIcon>
-              <ListItemText id={labelId} primary={`Line item ${value + 1}`} />
-            </ListItemButton>
-          </ListItem>
-          <Divider variant="inset" component="li" />
-          </React.Fragment>
-        );
-      })}
-    </List>
+            return (
+              <React.Fragment key={indx}>
+                <ListItem key={indx} secondaryAction={
+                  <IconButton edge="end" aria-label="comments">
+                    <span style={{ marginRight: '10px' }}><Button color="secondary" variant="contained" href="#contained-buttons">
+                      Edit
+                    </Button>
+                    </span>
+                    <span style={{ marginLeft: '10px' }}><Button color="error" variant="contained" href="#contained-buttons">
+                      Delete
+                    </Button></span>
+                  </IconButton>
+                } disablePadding>
+                  <ListItemButton role={undefined} onClick={handleToggle(value)}>
+                    <ListItemIcon>
+                      <Checkbox
+                        edge="start"
+                        checked={checked.indexOf(value) !== -1}
+                        tabIndex={-1}
+                        disableRipple
+                        inputProps={{ 'aria-labelledby': labelId }}
+                      />
+                    </ListItemIcon>
+                    <ListItemText id={labelId} primary={`Line item ${value + 1}`} />
+                  </ListItemButton>
+                </ListItem>
+                <Divider variant="inset" component="li" />
+              </React.Fragment>
+            );
+          })}
+        </List>
+      </div>
   );
 }

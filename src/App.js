@@ -3,6 +3,9 @@ import List from './Components/Lists'
 import './App.css';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
+import TaskStatus from "./Components/TaskStatus";
+import DateTime from "./Components/DateTime";
+import Stack from '@mui/material/Stack';
 
 function App() {
   const [indx, setIndx] = useState(0);
@@ -37,7 +40,18 @@ function App() {
             </Grid>
           <Grid item md={2.5} xs={4} sm={4}></Grid>
           <Grid item md={8} xs={8} sm={8}>
-            <List />
+            <div style={{ marginTop: '40px' }}>
+              <Stack
+                direction={{ xs: 'column', sm: 'column', md: 'row' }}
+                spacing={{ xs: 2, sm: 10, md: 55 }}
+              >
+                <TaskStatus />
+                <DateTime />
+              </Stack>
+            </div>
+            <div style={{ marginTop: '100px' }}>
+              <List />
+            </div>
           </Grid>
           <Grid item md={2.5} xs={2} sm={2}></Grid>
         </Grid>

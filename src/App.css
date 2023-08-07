@@ -6,4 +6,5 @@ body {
   background-size:auto;
   background-position: center;
   transition: background-color 1s ease;
+  background-color: aqua;
 }

@@ -10,6 +10,7 @@ function App() {
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="add-task" element={<TaskForm />} />
+      <Route path="add-task/:documentId" element={<TaskForm />} />
     </Routes>
   );
 }

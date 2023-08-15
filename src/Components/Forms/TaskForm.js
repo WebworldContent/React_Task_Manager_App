@@ -1,13 +1,26 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import Container from '@mui/material/Container';
 import { FormControl, TextField, Select, MenuItem, Button, InputLabel } from '@mui/material';
-import { addTask } from "../../Containers/FormStore";
-import { useNavigate } from "react-router-dom";
+import { addTask, getTask, updateTask } from "../../Containers/FormStore";
+import { useNavigate, useParams } from "react-router-dom";
 
 export const TaskForm = () => {
   const [name, setName] = useState('');
   const [status, setStatus] = useState('todo');
   const navigate = useNavigate();
+  const {documentId} = useParams();
+
+  useEffect(() => {
+    const getTaskDocIdBased = async () => {
+      const {name, status} = await getTask(documentId);
+      setName(name);
+      setStatus(status);
+    }
+
+    if (documentId) {
+      getTaskDocIdBased();
+    }
+  }, [documentId]);
 
   const onStatusChange = (event) => {
     const {value} = event.target;
@@ -21,11 +34,14 @@ export const TaskForm = () => {
 
   const onSubmitHandler = (event) => {
     event.preventDefault();
-    addTask(name, status);
+    if (documentId) {
+      updateTask(name, status, documentId);
+    } else {
+      addTask(name, status);
+    }
     navigate('/');
   };
 
-  console.log(name, status);
   return (
     <Container maxWidth="md" style={{marginTop: '300px', backgroundColor: '#fff', padding: '50px'}}>
       <div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
@@ -8,55 +8,50 @@ import ListItemText from '@mui/material/ListItemText';
 import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
-import { getTasks } from '../Containers/FormStore';
+import { deleteTask, getTasks } from '../Containers/FormStore';
+import { useNavigate } from 'react-router-dom';
 
 export default function CheckboxList() {
-  // const [checked, setChecked] = React.useState([0]);
   const [tasks, setTasks] = useState([]);
+  const [dataChanged, setDataChanged] = useState(false); 
+  const naviagate = useNavigate();
 
-  // const handleToggle = (value) => () => {
-  //   const currentIndex = checked.indexOf(value);
-  //   const newChecked = [...checked];
+  const handleTaskDeletion = async (docId) => {
+    if (docId) {
+      await deleteTask(docId);
+      setDataChanged(true);
+    }
+  };
 
-  //   if (currentIndex === -1) {
-  //     newChecked.push(value);
-  //   } else {
-  //     newChecked.splice(currentIndex, 1);
-  //   }
-
-  //   setChecked(newChecked);
-  // };
+  const getTaskData = useCallback(async () => {
+    const taskData = await getTasks();
+    setTasks(taskData);
+  }, []);
 
   useEffect(() => {
     try {
-      const getData = async () => {
-        const taskData = await getTasks();
-        setTasks((prevTask) => [...prevTask, ...taskData])
-      };
-      getData();
+      getTaskData();
+      setDataChanged(false);
     } catch(err) {
       throw new Error(err);
     }
-  }, []);
-
-  console.log(tasks);
+  }, [getTaskData, dataChanged]);
 
   return (
-    
       <div style={{ width: '100%', maxWidth: 960 }}>
         <List sx={{ bgcolor: 'background.paper' }}>
-          {tasks.map((task, indx) => {
+          {tasks.length ?  tasks.map((task, indx) => {
             const labelId = `checkbox-list-label-${indx}`;
 
             return (
               <React.Fragment key={indx}>
                 <ListItem key={indx} secondaryAction={
                   <IconButton edge="end" aria-label="comments">
-                    <span style={{ marginRight: '10px' }}><Button color="secondary" variant="contained" href="#contained-buttons">
+                    <span style={{ marginRight: '10px' }}><Button color="secondary" onClick={() => naviagate(`/add-task/${task.id}`)} variant="contained">
                       Edit
                     </Button>
                     </span>
-                    <span style={{ marginLeft: '10px' }}><Button color="error" variant="contained" href="#contained-buttons">
+                    <span style={{ marginLeft: '10px' }}><Button color="error" variant="contained" onClick={() => handleTaskDeletion(task.id)}>
                       Delete
                     </Button></span>
                   </IconButton>
@@ -71,7 +66,7 @@ export default function CheckboxList() {
                 <Divider variant="inset" component="li" />
               </React.Fragment>
             );
-          })}
+          }) : <h2 style={{ textAlign: 'center' }}>No Task Yet!!</h2>}
         </List>
       </div>
   );

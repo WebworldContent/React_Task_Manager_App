@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React from "react";
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import TaskStatus from "./TaskStatus";
@@ -10,22 +10,7 @@ import { useNavigate } from "react-router-dom";
 
 
 export const Home = () => {
-    const [indx, setIndx] = useState(0);
-    const bgColors = useMemo(() => ['#7FFFD4', '#6495ED', '#87CEFA', '#90EE90', '#DDA0DD'], []);
     const navigate = useNavigate();
-
-    useEffect(() => {
-        document.body.style.backgroundColor = bgColors[indx];
-    
-        const interval = setInterval(() => {
-        setIndx((prev) => (prev + 1) % bgColors.length);
-        }, 3000);
-
-        return () => {
-        document.body.style.backgroundColor = null;
-        clearInterval(interval);
-        };
-    }, [indx, bgColors]);
 
     return (<div style={{ display: 'flex', justifyContent: 'center' }}>
     <Box sx={{ flexGrow: 1 }}>

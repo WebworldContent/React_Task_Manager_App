@@ -1,36 +1,52 @@
-import * as React from 'react';
+import React, { useEffect, useState } from 'react';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import Checkbox from '@mui/material/Checkbox';
+// import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
+import { getTasks } from '../Containers/FormStore';
 
 export default function CheckboxList() {
-  const [checked, setChecked] = React.useState([0]);
+  // const [checked, setChecked] = React.useState([0]);
+  const [tasks, setTasks] = useState([]);
 
-  const handleToggle = (value) => () => {
-    const currentIndex = checked.indexOf(value);
-    const newChecked = [...checked];
+  // const handleToggle = (value) => () => {
+  //   const currentIndex = checked.indexOf(value);
+  //   const newChecked = [...checked];
 
-    if (currentIndex === -1) {
-      newChecked.push(value);
-    } else {
-      newChecked.splice(currentIndex, 1);
+  //   if (currentIndex === -1) {
+  //     newChecked.push(value);
+  //   } else {
+  //     newChecked.splice(currentIndex, 1);
+  //   }
+
+  //   setChecked(newChecked);
+  // };
+
+  useEffect(() => {
+    try {
+      const getData = async () => {
+        const taskData = await getTasks();
+        setTasks((prevTask) => [...prevTask, ...taskData])
+      };
+      getData();
+    } catch(err) {
+      throw new Error(err);
     }
+  }, []);
 
-    setChecked(newChecked);
-  };
+  console.log(tasks);
 
   return (
     
       <div style={{ width: '100%', maxWidth: 960 }}>
         <List sx={{ bgcolor: 'background.paper' }}>
-          {[0, 1, 2, 3].map((value, indx) => {
-            const labelId = `checkbox-list-label-${value}`;
+          {tasks.map((task, indx) => {
+            const labelId = `checkbox-list-label-${indx}`;
 
             return (
               <React.Fragment key={indx}>
@@ -44,18 +60,12 @@ export default function CheckboxList() {
                       Delete
                     </Button></span>
                   </IconButton>
-                } disablePadding>
-                  <ListItemButton role={undefined} onClick={handleToggle(value)}>
-                    <ListItemIcon>
-                      <Checkbox
-                        edge="start"
-                        checked={checked.indexOf(value) !== -1}
-                        tabIndex={-1}
-                        disableRipple
-                        inputProps={{ 'aria-labelledby': labelId }}
-                      />
+                } disablePadding style={{ display: 'flex', alignItems: 'center' }}>
+                  <ListItemButton role={undefined}>
+                    <ListItemIcon style={{ paddingRight: '50px'}}>
+                      <Button variant="contained">{task.status}</Button>
                     </ListItemIcon>
-                    <ListItemText id={labelId} primary={`Line item ${value + 1}`} />
+                    <ListItemText id={labelId} primary={task.name} />
                   </ListItemButton>
                 </ListItem>
                 <Divider variant="inset" component="li" />

@@ -2,10 +2,12 @@ import React, {useState} from "react";
 import Container from '@mui/material/Container';
 import { FormControl, TextField, Select, MenuItem, Button, InputLabel } from '@mui/material';
 import { addTask } from "../../Containers/FormStore";
+import { useNavigate } from "react-router-dom";
 
 export const TaskForm = () => {
   const [name, setName] = useState('');
   const [status, setStatus] = useState('todo');
+  const navigate = useNavigate();
 
   const onStatusChange = (event) => {
     const {value} = event.target;
@@ -19,8 +21,8 @@ export const TaskForm = () => {
 
   const onSubmitHandler = (event) => {
     event.preventDefault();
-    console.log('submit called');
     addTask(name, status);
+    navigate('/');
   };
 
   console.log(name, status);

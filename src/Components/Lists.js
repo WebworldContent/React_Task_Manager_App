@@ -8,10 +8,10 @@ import ListItemText from '@mui/material/ListItemText';
 import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
-import { deleteTask, getTasks } from '../Containers/FormStore';
+import { deleteTask, getTaskStatus, getTasks } from '../Containers/FormStore';
 import { useNavigate } from 'react-router-dom';
 
-export default function CheckboxList() {
+export default function CheckboxList({searchedStatus}) {
   const [tasks, setTasks] = useState([]);
   const [dataChanged, setDataChanged] = useState(false); 
   const naviagate = useNavigate();
@@ -28,14 +28,23 @@ export default function CheckboxList() {
     setTasks(taskData);
   }, []);
 
+  const getTasksStatusWise = useCallback(async () => {
+    const taskData = await getTaskStatus(searchedStatus);
+    setTasks(taskData);
+  }, [searchedStatus]);
+
   useEffect(() => {
     try {
-      getTaskData();
+      if (searchedStatus) {
+        getTasksStatusWise();
+      } else {
+        getTaskData();
+      }
       setDataChanged(false);
     } catch(err) {
       throw new Error(err);
     }
-  }, [getTaskData, dataChanged]);
+  }, [getTaskData, dataChanged, getTasksStatusWise, searchedStatus]);
 
   return (
       <div style={{ width: '100%', maxWidth: 960 }}>

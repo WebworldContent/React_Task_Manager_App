@@ -6,6 +6,10 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DesktopDateTimePicker } from '@mui/x-date-pickers/DesktopDateTimePicker';
 
 export default function DateTime() {
+  const handleDateAccept = (date) => {
+    console.log(date);
+  };
+
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DemoContainer
@@ -18,7 +22,7 @@ export default function DateTime() {
       >
        
         <DemoItem>
-          <DesktopDateTimePicker defaultValue={dayjs()} />
+          <DesktopDateTimePicker defaultValue={dayjs()} onAccept={handleDateAccept} />
         </DemoItem>
       </DemoContainer>
     </LocalizationProvider>

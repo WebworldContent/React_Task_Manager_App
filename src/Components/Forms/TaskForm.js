@@ -65,7 +65,7 @@ export const TaskForm = () => {
             value={status}
             >
             <MenuItem value="todo">Todo</MenuItem>
-            <MenuItem value="in-progress">In Progress</MenuItem>
+            <MenuItem value="in_progress">In Progress</MenuItem>
             <MenuItem value="completed">Completed</MenuItem>
           </Select>
         </FormControl>

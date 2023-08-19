@@ -3,8 +3,11 @@ import Container from '@mui/material/Container';
 import { FormControl, TextField, Select, MenuItem, Button, InputLabel } from '@mui/material';
 import { addTask, getTask, updateTask } from "../../Containers/FormStore";
 import { useNavigate, useParams } from "react-router-dom";
+import Alert from '@mui/material/Alert';
+
 
 export const TaskForm = () => {
+  const [error, setError] = useState(false);
   const [name, setName] = useState('');
   const [status, setStatus] = useState('todo');
   const navigate = useNavigate();
@@ -29,11 +32,16 @@ export const TaskForm = () => {
 
   const onNameChange = (event) => {
     const {value} = event.target;
+    setError(false);
     setName(value);
   };
 
   const onSubmitHandler = (event) => {
     event.preventDefault();
+    if (name === '') {
+      setError(true);
+      return;
+    }
     if (documentId) {
       updateTask(name, status, documentId);
     } else {
@@ -48,6 +56,7 @@ export const TaskForm = () => {
         <h1 style={{fontFamily: 'cursive', fontSize: 'xxx-large'}}>Add Tasks</h1>
       </div>
       <form onSubmit={onSubmitHandler}>
+        { error && <Alert severity="error">Task Name field is required</Alert> }
         <FormControl fullWidth margin="normal">
           <TextField
             label="Task Name"
@@ -56,7 +65,7 @@ export const TaskForm = () => {
             variant="outlined"
           />
         </FormControl>
-
+        
         <FormControl fullWidth margin="normal">
           <InputLabel>Status</InputLabel>
           <Select

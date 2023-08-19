@@ -79,7 +79,7 @@ export const TaskForm = () => {
           </Select>
         </FormControl>
 
-        <Button type="submit" variant="contained" color="primary">
+        <Button type="submit" variant="contained" color="primary" disabled={error}>
           Submit
         </Button>
       </form>

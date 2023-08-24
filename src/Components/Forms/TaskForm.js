@@ -10,14 +10,16 @@ export const TaskForm = () => {
   const [error, setError] = useState(false);
   const [name, setName] = useState('');
   const [status, setStatus] = useState('todo');
+  const [category, setCategory] = useState('');
   const navigate = useNavigate();
   const {documentId} = useParams();
 
   useEffect(() => {
     const getTaskDocIdBased = async () => {
-      const {name, status} = await getTask(documentId);
+      const {name, status, category} = await getTask(documentId);
       setName(name);
       setStatus(status);
+      setCategory(category);
     }
 
     if (documentId) {
@@ -28,6 +30,11 @@ export const TaskForm = () => {
   const onStatusChange = (event) => {
     const {value} = event.target;
     setStatus(value);
+  };
+
+  const onCategoryChange = (event) => {
+    const {value} = event.target;
+    setCategory(value);
   };
 
   const onNameChange = (event) => {
@@ -43,9 +50,9 @@ export const TaskForm = () => {
       return;
     }
     if (documentId) {
-      updateTask(name, status, documentId);
+      updateTask({name, status, category, documentId});
     } else {
-      addTask(name, status);
+      addTask({name, status, category});
     }
     navigate('/');
   };
@@ -76,6 +83,19 @@ export const TaskForm = () => {
             <MenuItem value="todo">Todo</MenuItem>
             <MenuItem value="in_progress">In Progress</MenuItem>
             <MenuItem value="completed">Completed</MenuItem>
+          </Select>
+        </FormControl>
+
+        <FormControl fullWidth margin="normal">
+          <InputLabel>Category</InputLabel>
+          <Select
+            label="Category"
+            onChange={onCategoryChange}
+            value={category}
+            >
+            <MenuItem value="personel">Personel</MenuItem>
+            <MenuItem value="professional">Professional</MenuItem>
+            <MenuItem value="others">Others</MenuItem>
           </Select>
         </FormControl>
 

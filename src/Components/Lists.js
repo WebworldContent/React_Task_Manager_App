@@ -4,14 +4,13 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-// import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
-import { deleteTask, getTaskStatus, getTasks } from '../Containers/FormStore';
+import { deleteTask, getTaskStatus, getTasks, getTaskCategory } from '../Containers/FormStore';
 import { useNavigate } from 'react-router-dom';
 
-export default function CheckboxList({searchedStatus}) {
+export default function CheckboxList({searchedStatus, taskCategory: searchedCategory}) {
   const [tasks, setTasks] = useState([]);
   const [dataChanged, setDataChanged] = useState(false); 
   const naviagate = useNavigate();
@@ -33,10 +32,17 @@ export default function CheckboxList({searchedStatus}) {
     setTasks(taskData);
   }, [searchedStatus]);
 
+  const getTasksCategoryWise = useCallback(async () => {
+    const taskData = await getTaskCategory(searchedCategory);
+    setTasks(taskData);
+  }, [searchedCategory]);
+
   useEffect(() => {
     try {
       if (searchedStatus) {
         getTasksStatusWise();
+      } else if (searchedCategory) {
+        getTasksCategoryWise()
       } else {
         getTaskData();
       }
@@ -44,7 +50,9 @@ export default function CheckboxList({searchedStatus}) {
     } catch(err) {
       throw new Error(err);
     }
-  }, [getTaskData, dataChanged, getTasksStatusWise, searchedStatus]);
+  }, [getTaskData, dataChanged, getTasksStatusWise, searchedStatus, getTasksCategoryWise, searchedCategory]);
+
+  console.log(tasks);
 
   return (
       <div style={{ width: '100%', maxWidth: 960 }}>
@@ -56,6 +64,11 @@ export default function CheckboxList({searchedStatus}) {
               <React.Fragment key={indx}>
                 <ListItem key={indx} secondaryAction={
                   <IconButton edge="end" aria-label="comments">
+                    <span style={{ marginRight: '10px' }}>
+                      <Button color="success">
+                        {task.category}
+                      </Button>
+                    </span>
                     <span style={{ marginRight: '10px' }}><Button color="secondary" onClick={() => naviagate(`/add-task/${task.id}`)} variant="contained">
                       Edit
                     </Button>

@@ -2,13 +2,9 @@ import { collection, addDoc, getDocs, getDoc, doc, updateDoc, deleteDoc, query, 
 
 import { db } from "../fireStore";
 
-export const addTask = async (name, status) => {
+export const addTask = async (itemDetails) => {
   try {
-    const docRef = await addDoc(collection(db, "tasks"), {
-      name,
-      status,
-      createdAt: new Date()
-    });
+    const docRef = await addDoc(collection(db, "tasks"), {...itemDetails, createdAt: new Date()});
     console.log("Document written with ID: ", docRef.id);
     return docRef.id;
   } catch (err) {
@@ -49,12 +45,13 @@ export const getTask = async (documentId) => {
   }
 };
 
-export const updateTask = async (name, status, documentId) => {
+export const updateTask = async (itemDetails) => {
   try {
-    const docRef = doc(db, 'tasks', documentId);
+    const docRef = doc(db, 'tasks', itemDetails.documentId);
     await updateDoc(docRef, {
-      name,
-      status
+      name: itemDetails.name,
+      status: itemDetails.status,
+      category: itemDetails.category
     });
     console.log('document updated!');
   } catch (err) {
@@ -76,6 +73,22 @@ export const getTaskStatus = async (status) => {
   try {
     const taskArray = [];
     const q = query(collection(db, "tasks"), where("status", "==", status));
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      const updateTask = doc.data();
+      updateTask['id'] = doc.id;
+      taskArray.push(updateTask);
+    });
+    return taskArray;
+  } catch(err) {
+    console.error("Error getting document", err);
+  }
+};
+
+export const getTaskCategory = async (category) => {
+  try {
+    const taskArray = [];
+    const q = query(collection(db, "tasks"), where("category", "==", category));
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
       const updateTask = doc.data();

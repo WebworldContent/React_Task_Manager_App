@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import TaskStatus from "./TaskStatus";
-import DateTime from "./DateTime";
+import TaskCategory from './TaskCategory';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import List from './Lists';
@@ -11,10 +11,13 @@ import { useNavigate } from "react-router-dom";
 
 export const Home = () => {
   const [searchedStatus, setSearchedStatus] = useState('');
+  const [taskCategory, setTaskCategory] = useState('');
   const navigate = useNavigate();
   const getTaskStatus = (data) => {
     setSearchedStatus(data);
   };
+
+  const getTaskCategory = (data) => setTaskCategory(data);
 
     return (<div style={{ display: 'flex', justifyContent: 'center' }}>
     <Box sx={{ flexGrow: 1 }}>
@@ -38,11 +41,11 @@ export const Home = () => {
             >
               <TaskStatus taskStatus={getTaskStatus} />
               <Button variant="contained" onClick={() => navigate('add-task')}>Add Tasks</Button>
-              <DateTime />
+              <TaskCategory taskCategory={getTaskCategory} />
             </Stack>
           </div>
           <div style={{ marginTop: '100px' }}>
-            <List searchedStatus={searchedStatus} />
+            <List searchedStatus={searchedStatus} taskCategory={taskCategory}/>
           </div>
         </Grid>
         <Grid item md={2.5} xs={2} sm={2}></Grid>

@@ -11,6 +11,8 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getUserDetails } from '../Containers/User';
+import { useNavigate } from 'react-router-dom';
 
 const pages = ['Products', 'Pricing', 'Blog'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
@@ -18,24 +20,25 @@ const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 export const MenuHeader = () => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const [userData, setUserDate] = React.useState({});
+  const navigate = useNavigate();
   const auth = getAuth();
 
   useEffect(() => {
-    console.log(auth);
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-          // User is signed in, see docs for a list of available properties
-          // https://firebase.google.com/docs/reference/js/auth.user
+    onAuthStateChanged(auth, async (user) => {
+        if (user.uid) {
           const uid = user.uid;
-          console.log(uid);
-          // ...
+          const resp = await getUserDetails(uid);
+          if (!resp) {
+            navigate('/login');
+            return;
+          }
+          setUserDate(resp);
         } else {
-          // User is signed out
-          // ...
-          console.log('not signed in ');
+          navigate('/login');
         }
       });
-  }, [auth]);
+  }, [auth, navigate]);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -126,7 +129,7 @@ export const MenuHeader = () => {
               textDecoration: 'none',
             }}
           >
-            LOGO
+            AMI-WORKS
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
@@ -140,12 +143,12 @@ export const MenuHeader = () => {
             ))}
           </Box>
 
-          <Box sx={{ flexGrow: 0 }}>
+          {Object.keys(userData).length ? <Box sx={{ flexGrow: 0 }}>
           
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Typography variant="h6" component="h6" style={{marginRight: '10px'}}>
-                    Amir
+                    {userData.name}
                 </Typography>
                 <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
               </IconButton>
@@ -172,7 +175,7 @@ export const MenuHeader = () => {
                 </MenuItem>
               ))}
             </Menu>
-          </Box>
+          </Box> : ''}
         </Toolbar>
       </Container>
     </AppBar>

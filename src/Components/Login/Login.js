@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { TextField, Button, Typography, Box } from '@mui/material';
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import { redirect } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const auth = getAuth();
+    const navigate = useNavigate();
   
     const handleEmailChange = (event) => {
       setEmail(event.target.value);
@@ -16,27 +17,18 @@ export const Login = () => {
       setPassword(event.target.value);
     };
   
-    const handleSubmit = (event) => {
+    const handleSubmit = async(event) => {
       event.preventDefault();
-  
-      // Here, you can perform your login logic using the username and password.
-      // For this example, let's just log the values to the console.
-      console.log('Email:', email);
-      console.log('Password:', password);
-
-      signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          // Signed in 
-          const user = userCredential.user;
-          console.log(user);
-          redirect('/register');
-          // ...
-        })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          console.log(errorCode, errorMessage);
-        });
+      try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+        console.log(user);
+        navigate('/');
+      } catch (error) {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorCode, errorMessage);
+      }
     };
   
   return (
@@ -77,6 +69,9 @@ export const Login = () => {
           />
           <Button type="submit" variant="contained" color="primary" style={{marginTop: '30px'}} fullWidth>
             Login
+          </Button>
+          <Button onClick={() => navigate('/register')} variant="contained" color="primary" style={{marginTop: '30px'}} fullWidth>
+            Go To Sign Up
           </Button>
         </form>
       </Box>

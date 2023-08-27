@@ -52,8 +52,6 @@ export default function CheckboxList({searchedStatus, taskCategory: searchedCate
     }
   }, [getTaskData, dataChanged, getTasksStatusWise, searchedStatus, getTasksCategoryWise, searchedCategory]);
 
-  console.log(tasks);
-
   return (
       <div style={{ width: '100%', maxWidth: 960 }}>
         <List sx={{ bgcolor: 'background.paper' }}>

@@ -2,22 +2,20 @@ import React, {useState} from 'react';
 import {TextField, Button, Typography, Box} from '@mui/material';
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { addUser } from '../../Containers/User';
-import { redirect } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 export const SignUp = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [username, serUsername] = useState('');
+    const navigate = useNavigate();
 
     const signUpUser = (email, password, displayName) => {
         const auth = getAuth();
-        console.log(auth);
         createUserWithEmailAndPassword(auth, email, password, displayName).then((userCredential) => { // Signed in
             const user = userCredential.user;
-            console.log(user, user.uid);
-
             addUser({name: username, email, userId: user.uid });
-            redirect('/');
+            navigate('/');
         }).catch((error) => {
             const errorCode = error.code;
             const errorMessage = error.message;
@@ -39,12 +37,6 @@ export const SignUp = () => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-
-        // Here, you can perform your login logic using the Email and password.
-        // For this example, let's just log the values to the console.
-        console.log('Email:', email);
-        console.log('Password:', password);
-
         signUpUser(email, password, username);
     };
 

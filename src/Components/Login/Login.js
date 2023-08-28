@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { TextField, Button, Typography, Box } from '@mui/material';
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export const Login = () => {
     const [email, setEmail] = useState('');
@@ -68,11 +68,13 @@ export const Login = () => {
             onChange={handlePasswordChange}
           />
           <Button type="submit" variant="contained" color="primary" style={{marginTop: '30px'}} fullWidth>
-            Login
+            Sign In
           </Button>
-          <Button onClick={() => navigate('/register')} variant="contained" color="primary" style={{marginTop: '30px'}} fullWidth>
-            Go To Sign Up
-          </Button>
+          <div style={{ textAlign: 'center', marginTop: '20px' }}>
+            <Link to='/register'>
+              Go To Register
+            </Link>
+          </div>
         </form>
       </Box>
     </Box>

@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {TextField, Button, Typography, Box} from '@mui/material';
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { addUser } from '../../Containers/User';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 export const SignUp = () => {
     const [email, setEmail] = useState('');
@@ -69,8 +69,13 @@ export const SignUp = () => {
                             {marginTop: '30px'}
                         }
                         fullWidth>
-                        Login
+                        Sign Up
                     </Button>
+                    <div style={{ textAlign: 'center', marginTop: '20px' }}>
+                        <Link to='/login'>
+                            Go To Login
+                        </Link>
+                    </div>
                 </form>
             </Box>
         </Box>

@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react";
-import Container from '@mui/material/Container';
+import {Container, Box, Grid} from '@mui/material';
 import { FormControl, TextField, Select, MenuItem, Button, InputLabel } from '@mui/material';
 import { addTask, getTask, updateTask } from "../../Containers/FormStore";
 import { useNavigate, useParams } from "react-router-dom";
@@ -98,10 +98,24 @@ export const TaskForm = () => {
             <MenuItem value="others">Others</MenuItem>
           </Select>
         </FormControl>
-
-        <Button type="submit" variant="contained" color="primary" disabled={error}>
-          Submit
-        </Button>
+        
+          <Box>
+            <Grid container spacing={2}>
+              <Grid item xs={6} md={6} sm={6}>
+                <Button type="submit" variant="contained" color="primary" disabled={error}>
+                  Submit
+                </Button>
+              </Grid>
+              <Grid item xs={6} md={6} sm={6}>
+                <div style={{ textAlign: 'end' }}>
+                  <Button onClick={() => navigate(-1)} type="submit" variant="contained" color="primary" disabled={error} end>
+                    Back
+                  </Button>
+                </div>
+              </Grid>
+            </Grid>
+          </Box>
+        
       </form>
     </Container>
     );

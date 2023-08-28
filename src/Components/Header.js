@@ -10,7 +10,7 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 import { getUserDetails } from '../Containers/User';
 import { useNavigate } from 'react-router-dom';
 
@@ -26,7 +26,7 @@ export const MenuHeader = () => {
 
   useEffect(() => {
     onAuthStateChanged(auth, async (user) => {
-        if (user.uid) {
+        if (user) {
           const uid = user.uid;
           const resp = await getUserDetails(uid);
           if (!resp) {
@@ -53,6 +53,16 @@ export const MenuHeader = () => {
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
+  };
+
+  const handleSettings = async (settingOption) => {
+    if (settingOption === 'Logout') {
+      try {
+        await signOut(auth);
+      } catch(error) {
+        console.log(error);
+      }
+    }
   };
 
   return (
@@ -170,7 +180,7 @@ export const MenuHeader = () => {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                <MenuItem key={setting} onClick={() => handleSettings(setting)}>
                   <Typography textAlign="center">{setting}</Typography>
                 </MenuItem>
               ))}

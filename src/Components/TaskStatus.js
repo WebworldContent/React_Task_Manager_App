@@ -25,7 +25,7 @@ export default function TaskStatus(props) {
           value={status}
         >
           <MenuItem value={0}>
-            <em>None</em>
+            <em>All Types</em>
           </MenuItem>
           <MenuItem value="todo">Todo</MenuItem>
           <MenuItem value="in_progress">In Progress</MenuItem>

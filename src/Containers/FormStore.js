@@ -13,12 +13,12 @@ export const addTask = async (itemDetails) => {
   }
 }
 
-export const getTasks = async () => {
+export const getTasks = async (uid) => {
   try {
     const taskArray = [];
-    const collectionRef = collection(db, 'tasks');
-    const tasks = await getDocs(collectionRef);
-    tasks.forEach((doc) => {
+    const q = query(collection(db, "tasks"), where("userId", "==", uid));
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
       const updateTask = doc.data();
       updateTask['id'] = doc.id;
       taskArray.push(updateTask);

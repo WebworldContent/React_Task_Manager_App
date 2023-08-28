@@ -8,11 +8,12 @@ import Button from '@mui/material/Button';
 import List from './Lists';
 import { useNavigate } from "react-router-dom";
 import { MenuHeader } from "./Header";
-
+import { getAuth } from "firebase/auth";
 
 export const Home = () => {
   const [searchedStatus, setSearchedStatus] = useState('');
   const [taskCategory, setTaskCategory] = useState('');
+  const auth = getAuth();
   const navigate = useNavigate();
   const getTaskStatus = (data) => {
     setSearchedStatus(data);
@@ -22,7 +23,7 @@ export const Home = () => {
 
     return (
     <Fragment>
-      <MenuHeader />
+      <MenuHeader auth={auth} />
       <div style={{ display: 'flex', justifyContent: 'center' }}>
         <Box sx={{ flexGrow: 1 }}>
           <Grid container spacing={2}>
@@ -49,7 +50,7 @@ export const Home = () => {
                 </Stack>
               </div>
               <div style={{ marginTop: '100px' }}>
-                <List searchedStatus={searchedStatus} taskCategory={taskCategory}/>
+                <List searchedStatus={searchedStatus} taskCategory={taskCategory} auth={auth} />
               </div>
             </Grid>
             <Grid item md={2.5} xs={2} sm={2}></Grid>

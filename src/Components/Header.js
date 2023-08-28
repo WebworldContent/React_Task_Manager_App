@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -9,35 +9,40 @@ import Container from '@mui/material/Container';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
+import { deepPurple } from '@mui/material/colors';
 import MenuItem from '@mui/material/MenuItem';
-import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 import { getUserDetails } from '../Containers/User';
 import { useNavigate } from 'react-router-dom';
 
 const pages = ['Products', 'Pricing', 'Blog'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
-export const MenuHeader = () => {
+export const MenuHeader = ({auth}) => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const [userAvatar, setUserAvatar] = useState('');
   const [userData, setUserDate] = React.useState({});
+
   const navigate = useNavigate();
-  const auth = getAuth();
 
   useEffect(() => {
     onAuthStateChanged(auth, async (user) => {
-        if (user) {
-          const uid = user.uid;
-          const resp = await getUserDetails(uid);
-          if (!resp) {
-            navigate('/login');
-            return;
-          }
-          setUserDate(resp);
-        } else {
+      if (user) {
+        const uid = user.uid;
+        const resp = await getUserDetails(uid);
+        if (!resp) {
           navigate('/login');
+          return;
         }
-      });
+        
+        setUserDate(resp);
+        const {name} = resp;
+        setUserAvatar(name ? `${name[0]}${name[1]}`.toUpperCase(): '');
+      } else {
+        navigate('/login');
+      }
+    });
   }, [auth, navigate]);
 
   const handleOpenNavMenu = (event) => {
@@ -158,9 +163,9 @@ export const MenuHeader = () => {
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Typography variant="h6" component="h6" style={{marginRight: '10px'}}>
-                    {userData.name}
+                    <p style={{ textTransform: 'capitalize' }}>{userData.name}</p>
                 </Typography>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <Avatar sx={{ bgcolor: deepPurple[500] }}>{userAvatar}</Avatar>
               </IconButton>
             </Tooltip>
             <Menu

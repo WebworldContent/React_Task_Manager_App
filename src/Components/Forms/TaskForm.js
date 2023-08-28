@@ -4,6 +4,7 @@ import { FormControl, TextField, Select, MenuItem, Button, InputLabel } from '@m
 import { addTask, getTask, updateTask } from "../../Containers/FormStore";
 import { useNavigate, useParams } from "react-router-dom";
 import Alert from '@mui/material/Alert';
+import { getAuth } from "firebase/auth";
 
 
 export const TaskForm = () => {
@@ -40,20 +41,26 @@ export const TaskForm = () => {
   const onNameChange = (event) => {
     const {value} = event.target;
     setError(false);
-    setName(value);
+    setName(value.toLowerCase());
   };
 
   const onSubmitHandler = (event) => {
     event.preventDefault();
-    if (name === '') {
-      setError(true);
-      return;
+    const auth = getAuth();
+    const user = auth.currentUser;
+    if (user) {
+      const userId = user.uid;
+      if (name === '') {
+        setError(true);
+        return;
+      }
+      if (documentId) {
+        updateTask({name, status, category, documentId});
+      } else {
+        addTask({name, status, category, userId});
+      }
     }
-    if (documentId) {
-      updateTask({name, status, category, documentId});
-    } else {
-      addTask({name, status, category});
-    }
+
     navigate('/');
   };
 

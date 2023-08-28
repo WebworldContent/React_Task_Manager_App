@@ -10,7 +10,7 @@ import Divider from '@mui/material/Divider';
 import { deleteTask, getTaskStatus, getTasks, getTaskCategory } from '../Containers/FormStore';
 import { useNavigate } from 'react-router-dom';
 
-export default function CheckboxList({searchedStatus, taskCategory: searchedCategory}) {
+export default function CheckboxList({searchedStatus, taskCategory: searchedCategory, auth}) {
   const [tasks, setTasks] = useState([]);
   const [dataChanged, setDataChanged] = useState(false); 
   const naviagate = useNavigate();
@@ -23,9 +23,14 @@ export default function CheckboxList({searchedStatus, taskCategory: searchedCate
   };
 
   const getTaskData = useCallback(async () => {
-    const taskData = await getTasks();
+    const {currentUser} = auth;
+    if (currentUser === null) {
+      return;
+    }
+    const userId = currentUser.uid;
+    const taskData = await getTasks(userId);
     setTasks(taskData);
-  }, []);
+  }, [auth]);
 
   const getTasksStatusWise = useCallback(async () => {
     const taskData = await getTaskStatus(searchedStatus);

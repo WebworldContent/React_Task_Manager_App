@@ -20,9 +20,7 @@ export const Login = () => {
     const handleSubmit = async(event) => {
       event.preventDefault();
       try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
-        console.log(user);
+        await signInWithEmailAndPassword(auth, email, password);
         navigate('/');
       } catch (error) {
         const errorCode = error.code;

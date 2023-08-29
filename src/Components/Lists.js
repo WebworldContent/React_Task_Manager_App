@@ -9,10 +9,11 @@ import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import { deleteTask, getTaskStatus, getTasks, getTaskCategory } from '../Containers/FormStore';
 import { useNavigate } from 'react-router-dom';
+import { onAuthStateChanged } from "firebase/auth";
 
 export default function CheckboxList({searchedStatus, taskCategory: searchedCategory, auth}) {
   const [tasks, setTasks] = useState([]);
-  const [dataChanged, setDataChanged] = useState(false); 
+  const [dataChanged, setDataChanged] = useState(false);
   const naviagate = useNavigate();
 
   const handleTaskDeletion = async (docId) => {
@@ -23,13 +24,14 @@ export default function CheckboxList({searchedStatus, taskCategory: searchedCate
   };
 
   const getTaskData = useCallback(async () => {
-    const {currentUser} = auth;
-    if (currentUser === null) {
-      return;
-    }
-    const userId = currentUser.uid;
-    const taskData = await getTasks(userId);
-    setTasks(taskData);
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const uid = user.uid;
+        const taskData = await getTasks(uid);
+        setTasks(taskData);
+      }
+    });
+    
   }, [auth]);
 
   const getTasksStatusWise = useCallback(async () => {

@@ -54,6 +54,11 @@ export const TaskForm = () => {
         setError(true);
         return;
       }
+
+      if (category === '') {
+        return;
+      }
+
       if (documentId) {
         updateTask({name, status, category, documentId});
       } else {
@@ -115,7 +120,7 @@ export const TaskForm = () => {
               </Grid>
               <Grid item xs={6} md={6} sm={6}>
                 <div style={{ textAlign: 'end' }}>
-                  <Button onClick={() => navigate(-1)} type="submit" variant="contained" color="primary" disabled={error} end>
+                  <Button onClick={() => navigate('/')} type="submit" variant="contained" color="primary" disabled={error} end>
                     Back
                   </Button>
                 </div>

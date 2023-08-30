@@ -42,11 +42,11 @@ export const TaskForm = () => {
   const errorCheck = (name, category) => {
     const errors = {};
     if (name === '') {
-      errors['name'] = 'Name Field should not be Empty';
+      errors['name'] = 'Error: name Field should not be empty';
     }
 
     if (category === '') {
-      errors['category'] = 'Category Field should not be Empty';
+      errors['category'] = 'Error: category field should not be empty';
     }
 
     return errors;

@@ -1,31 +1,75 @@
 import React, { useState } from 'react';
-import { TextField, Button, Typography, Box } from '@mui/material';
+import { TextField, Button, Typography, Box, Alert } from '@mui/material';
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { Link, useNavigate } from "react-router-dom";
 
 export const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [error, setError] = useState({});
     const auth = getAuth();
     const navigate = useNavigate();
   
     const handleEmailChange = (event) => {
-      setEmail(event.target.value);
+      const {name, value} = event.target;
+      setError((prevError) => ({...prevError, [name]: ''}));
+      setEmail(value);
     };
+
+    const handleOnBlur = (event) => {
+      const {name, value} = event.target;
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(value)) {
+        setError((prevError) => ({...prevError, [name]: 'Error: invalid email'}));
+      }
+    }
   
     const handlePasswordChange = (event) => {
-      setPassword(event.target.value);
+      const {name, value} = event.target;
+      setError((prevError) => ({...prevError, [name]: ''}));
+      setPassword(value);
     };
+
+    const errorCheck = (email, password) => {
+      const errors = {};
+      if (email === '') {
+        errors['email'] = 'Error: email field should not be empty';
+      }
+  
+      if (password === '') {
+        errors['password'] = 'Error: password field should not be empty';
+      }
+  
+      return errors;
+    };
+
+    const errorExist = (errors) => {
+      const errorCheck = Object.values(errors).filter((data) => data !== '');
+      return {
+        messages: errorCheck,
+        length: errorCheck.length
+      };
+    };
+
+    const errorMsg = (errors) => {
+      return errorExist(errors).messages.map((data) => <Alert key={data} severity="error">{data}</Alert>);
+    };  
   
     const handleSubmit = async(event) => {
       event.preventDefault();
+
+      const newErrors = errorCheck(email, password);
+      if (errorExist(newErrors).length) {
+        setError((error) => ({...error, ...newErrors}));
+        return;
+      }
+      
       try {
         await signInWithEmailAndPassword(auth, email, password);
         navigate('/');
       } catch (error) {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(errorCode, errorMessage);
+        const errorMessage = error.message.split(':')[1];
+        setError((prevError) => ({...prevError, 'Firebase': errorMessage}));
       }
     };
   
@@ -47,6 +91,7 @@ export const Login = () => {
         <Typography variant="h4" align="center" gutterBottom>
           Login
         </Typography>
+        {errorExist(error).length ? errorMsg(error) : '' }
         <form onSubmit={handleSubmit}>
           <TextField
             label="Email"
@@ -54,6 +99,8 @@ export const Login = () => {
             fullWidth
             margin="normal"
             value={email}
+            name="email"
+            onBlur={handleOnBlur}
             onChange={handleEmailChange}
           />
           <TextField
@@ -63,6 +110,7 @@ export const Login = () => {
             fullWidth
             margin="normal"
             value={password}
+            name="password"
             onChange={handlePasswordChange}
           />
           <Button type="submit" variant="contained" color="primary" style={{marginTop: '30px'}} fullWidth>

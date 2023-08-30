@@ -4,11 +4,11 @@ import { FormControl, TextField, Select, MenuItem, Button, InputLabel } from '@m
 import { addTask, getTask, updateTask } from "../../Containers/FormStore";
 import { useNavigate, useParams } from "react-router-dom";
 import Alert from '@mui/material/Alert';
-import { getAuth } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 
 export const TaskForm = () => {
-  const [error, setError] = useState(false);
+  const [error, setError] = useState({});
   const [name, setName] = useState('');
   const [status, setStatus] = useState('todo');
   const [category, setCategory] = useState('');
@@ -34,39 +34,63 @@ export const TaskForm = () => {
   };
 
   const onCategoryChange = (event) => {
-    const {value} = event.target;
+    const {name, value} = event.target;
+    setError((prevError) => ({...prevError, [name]: ''}));
     setCategory(value);
   };
 
+  const errorCheck = (name, category) => {
+    const errors = {};
+    if (name === '') {
+      errors['name'] = 'Name Field should not be Empty';
+    }
+
+    if (category === '') {
+      errors['category'] = 'Category Field should not be Empty';
+    }
+
+    return errors;
+  };
+
   const onNameChange = (event) => {
-    const {value} = event.target;
-    setError(false);
+    const {name, value} = event.target;
+    setError((prevError) => ({...prevError, [name]: ''}));
     setName(value.toLowerCase());
+  };
+
+  const errorExist = (errors) => {
+    const errorCheck = Object.values(errors).filter((data) => data !== '');
+    return {
+      messages: errorCheck,
+      length: errorCheck.length
+    };
   };
 
   const onSubmitHandler = (event) => {
     event.preventDefault();
     const auth = getAuth();
-    const user = auth.currentUser;
-    if (user) {
-      const userId = user.uid;
-      if (name === '') {
-        setError(true);
-        return;
-      }
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const userId = user.uid;
+        const newErrors = errorCheck(name, category);
+        if (errorExist(newErrors).length) {
+          setError((error) => ({...error, ...newErrors}));
+          return;
+        }
 
-      if (category === '') {
-        return;
-      }
+        if (documentId) {
+          updateTask({name, status, category, documentId});
+        } else {
+          addTask({name, status, category, userId});
+        }
 
-      if (documentId) {
-        updateTask({name, status, category, documentId});
-      } else {
-        addTask({name, status, category, userId});
+        navigate('/');
       }
-    }
+    });
+  };
 
-    navigate('/');
+  const errorMsg = (errors) => {
+    return errorExist(errors).messages.map((data) => <Alert key={data} severity="error">{data}</Alert>);
   };
 
   return (
@@ -75,11 +99,12 @@ export const TaskForm = () => {
         <h1 style={{fontFamily: 'cursive', fontSize: 'xxx-large'}}>Add Tasks</h1>
       </div>
       <form onSubmit={onSubmitHandler}>
-        { error && <Alert severity="error">Task Name field is required</Alert> }
+        {errorExist(error).length ? errorMsg(error) : '' }
         <FormControl fullWidth margin="normal">
           <TextField
             label="Task Name"
             value={name}
+            name="name"
             onChange={onNameChange}
             variant="outlined"
           />
@@ -103,6 +128,7 @@ export const TaskForm = () => {
           <Select
             label="Category"
             onChange={onCategoryChange}
+            name="category"
             value={category}
             >
             <MenuItem value="personel">Personel</MenuItem>
@@ -114,13 +140,13 @@ export const TaskForm = () => {
           <Box>
             <Grid container spacing={2}>
               <Grid item xs={6} md={6} sm={6}>
-                <Button type="submit" variant="contained" color="primary" disabled={error}>
+                <Button type="submit" variant="contained" color="primary" disabled={!!errorExist(error).length}>
                   Submit
                 </Button>
               </Grid>
               <Grid item xs={6} md={6} sm={6}>
                 <div style={{ textAlign: 'end' }}>
-                  <Button onClick={() => navigate('/')} type="submit" variant="contained" color="primary" disabled={error}>
+                  <Button onClick={() => navigate('/')} variant="contained" color="primary" >
                     Back
                   </Button>
                 </div>

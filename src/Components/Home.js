@@ -2,7 +2,6 @@ import React, { Fragment, useState } from "react";
 import TaskStatus from "./TaskStatus";
 import TaskCategory from './TaskCategory';
 import {Stack, Button, Box, Grid} from '@mui/material';
-import List from './Lists';
 import { useNavigate } from "react-router-dom";
 import { MenuHeader } from "./Header";
 import { getAuth } from "firebase/auth";
@@ -27,7 +26,7 @@ export const Home = () => {
           <Grid container spacing={2} justifyContent="center" alignItems="center">
               <Grid item md={8} xs={10} sm={10}>
                 <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-                  <CardElement/><CardElement/><CardElement/><CardElement/>
+                  <CardElement searchedStatus={searchedStatus} taskCategory={taskCategory} auth={auth}/>
                 </div>
               </Grid>
               <Grid item md={8} xs={10} sm={10}>
@@ -40,9 +39,6 @@ export const Home = () => {
                     <Button variant="contained" onClick={() => navigate('add-task')}>Add Tasks</Button>
                     <TaskCategory taskCategory={getTaskCategory} />
                   </Stack>
-                </div>
-                <div style={{ marginTop: '100px', display: 'flex', justifyContent: 'center' }}>
-                  <List searchedStatus={searchedStatus} taskCategory={taskCategory} auth={auth} />
                 </div>
               </Grid>
           </Grid>

@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 export const CardInner = ({name, status, category, taskId, handleDelete}) => {
 
     const naviagate = useNavigate();
+
     const handleTaskDeletion = async (docId) => {
       if (docId) {
         await deleteTask(docId);
@@ -30,14 +31,10 @@ export const CardInner = ({name, status, category, taskId, handleDelete}) => {
         </CardContent>
         <CardActions>
           <span style={{ marginLeft: '0px' }}>
-            <Button color="secondary" onClick={() => naviagate(`/add-task/${taskId}`)} variant="contained">
-              Edit
-            </Button>
+            {taskId ? <Button color="secondary" onClick={() => naviagate(`/add-task/${taskId}`)} variant="contained">Edit</Button> : ''}
           </span>
           <span style={{ marginLeft: '110px' }}>
-            <Button color="error" variant="contained" onClick={() => handleTaskDeletion(taskId)}>
-              Delete
-            </Button>
+            {taskId ? <Button color="error" variant="contained" onClick={() => handleTaskDeletion(taskId)}>Delete</Button> : ''}
           </span>
         </CardActions>
       </Card>

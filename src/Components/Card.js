@@ -51,7 +51,6 @@ export default function CardElement({searchedStatus, taskCategory: searchedCateg
     }
   }, [getTaskData, dataChanged, getTasksStatusWise, searchedStatus, getTasksCategoryWise, searchedCategory]);
 
-
   const handleOnDragEnd = (result) => {
     const {source, destination} = result;
     console.log(result);
@@ -108,8 +107,9 @@ export default function CardElement({searchedStatus, taskCategory: searchedCateg
                       {...provided.droppableProps}
                   >
                       {tasks.map((task, indx) => {
+                        console.log(`Debug: draggableId=${task.id}${indx}`);
                       return (
-                        <Draggable draggableId={task.id} index={indx} key={indx}>
+                        <Draggable draggableId={`${task.id}${indx}`} index={indx} key={indx}>
                           {
                             (provided) => (
                               <div key={indx} {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef} >
@@ -145,8 +145,9 @@ export default function CardElement({searchedStatus, taskCategory: searchedCateg
                       {...provided.droppableProps}
                   >
                       {progressList.map((task, indx) => {
+                        console.log(`Debug: draggableId=${task.id}${indx}`);
                       return (
-                        <Draggable draggableId={task.id} index={indx} key={indx}>
+                        <Draggable draggableId={`${task.id}${indx}`} index={indx} key={indx}>
                           {
                             (provided) => (
                               <div key={indx} {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef} >
@@ -154,8 +155,7 @@ export default function CardElement({searchedStatus, taskCategory: searchedCateg
                                   name={task.name}
                                   category={task.category}
                                   status={task.status}
-                                  taskId={task.id}
-                                  handleDelete={onDelete}
+                                  taskId=''
                                 />
                               </div>
                             )
@@ -183,8 +183,9 @@ export default function CardElement({searchedStatus, taskCategory: searchedCateg
                       {...provided.droppableProps}
                   >
                       {completedList.map((task, indx) => {
+                        console.log(`Debug: draggableId=${task.id}${indx}`);
                       return (
-                        <Draggable draggableId={task.id} index={indx} key={indx}>
+                        <Draggable draggableId={`${task.id}${indx}`} index={indx} key={indx}>
                           {
                             (provided) => (
                               <div key={indx} {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef} >
@@ -192,8 +193,7 @@ export default function CardElement({searchedStatus, taskCategory: searchedCateg
                                   name={task.name}
                                   category={task.category}
                                   status={task.status}
-                                  taskId={task.id}
-                                  handleDelete={onDelete}
+                                  taskId=''
                                 />
                               </div>
                             )

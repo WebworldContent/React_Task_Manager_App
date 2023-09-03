@@ -1,19 +1,18 @@
-import React, { useEffect, useState, useCallback, Fragment } from 'react';
-import {Card, CardActions, CardContent, Button, Typography} from '@mui/material';
-import { deleteTask, getTaskStatus, getTasks, getTaskCategory } from '../Containers/FormStore';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState, useCallback } from 'react';
+import { getTaskStatus, getTasks, getTaskCategory } from '../Containers/FormStore';
 import { onAuthStateChanged } from "firebase/auth";
+import { Draggable, DragDropContext, Droppable } from "react-beautiful-dnd";
+import { CardInner } from './CardContent';
+import { Box, Grid } from '@mui/material';
 
 export default function CardElement({searchedStatus, taskCategory: searchedCategory, auth}) {
   const [tasks, setTasks] = useState([]);
   const [dataChanged, setDataChanged] = useState(false);
-  const naviagate = useNavigate();
+  const [progressList, setProgressList] = useState([]);
+  const [completedList, setCompletedList] = useState([]);
 
-  const handleTaskDeletion = async (docId) => {
-    if (docId) {
-      await deleteTask(docId);
-      setDataChanged(true);
-    }
+  const onDelete = (dataChanged) => {
+    setDataChanged(dataChanged);
   };
 
   const getTaskData = useCallback(async () => {
@@ -53,37 +52,162 @@ export default function CardElement({searchedStatus, taskCategory: searchedCateg
   }, [getTaskData, dataChanged, getTasksStatusWise, searchedStatus, getTasksCategoryWise, searchedCategory]);
 
 
+  const handleOnDragEnd = (result) => {
+    const {source, destination} = result;
+    console.log(result);
+    if (!destination) return;
+
+    if (destination.droppableId === source.droppableId && destination.index === source.index) return;
+
+    let add, 
+    active = tasks,
+    progress = progressList,
+    completed = completedList;
+
+    if (source.droppableId === 'TodosList') {
+      add = active[source.index];
+      active.splice(source.index, 1);
+    } else if (source.droppableId === 'ProgressList') {
+      add = progress[source.index];
+      progress.splice(source.index, 1);
+    } else {
+      add = completed[source.index];
+      completed.splice(source.index, 1);
+    }
+
+    if (destination.droppableId === 'TodosList') {
+      active.splice(destination.index, 0, add);
+    } else if (destination.droppableId === 'ProgressList') {
+      progress.splice(destination.index, 0, add);
+    } else {
+      completed.splice(destination.index, 0, add);
+    }
+
+    setTasks(active);
+    setProgressList(progress);
+    setCompletedList(completed);
+
+  };
+
   return (
-      <Fragment>
-        {tasks.length ? tasks.map((task, indx) => {
-        return (<Card sx={{ minWidth: 275, margin: 1 }} key={indx}>
-            <CardContent>
-                <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                <Button color="info">{task.status}</Button>
-                </Typography>
-                <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                {task.name}
-                </Typography>
-                <Typography variant="body2">
-                <Button color="success">
-                  {task.category}
-                </Button>
-                </Typography>
-            </CardContent>
-            <CardActions>
-              <span style={{ marginLeft: '0px' }}>
-                <Button color="secondary" onClick={() => naviagate(`/add-task/${task.id}`)} variant="contained">
-                  Edit
-                </Button>
-              </span>
-              <span style={{ marginLeft: '110px' }}>
-                <Button color="error" variant="contained" onClick={() => handleTaskDeletion(task.id)}>
-                  Delete
-                </Button>
-              </span>
-            </CardActions>
-        </Card>)
-        }) : <h2 style={{ textAlign: 'center' }}>No Task Yet!!</h2>}
-    </Fragment>
+    <div style={{ marginTop: '30px' }}>
+      <Grid container spacing={2} justifyContent="center" alignItems="center">
+        <DragDropContext onDragEnd={handleOnDragEnd}>
+          <Grid item md={4} xs={10} sm={10}>
+            <div style={{ textAlign: 'center' }}><h1>Todo</h1></div>
+              <Droppable droppableId="TodosList">
+              {
+                (provided) => (
+                  <Box
+                      sx={{
+                          width: 400,
+                          height: 600,
+                          backgroundColor: '#83C0FC'
+                      }}
+                      ref={provided.innerRef}
+                      {...provided.droppableProps}
+                  >
+                      {tasks.map((task, indx) => {
+                      return (
+                        <Draggable draggableId={task.id} index={indx} key={indx}>
+                          {
+                            (provided) => (
+                              <div key={indx} {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef} >
+                                <CardInner
+                                  name={task.name}
+                                  category={task.category}
+                                  status={task.status}
+                                  taskId={task.id}
+                                  handleDelete={onDelete}
+                                />
+                              </div>
+                            )
+                          }
+                        
+                        </Draggable>)})}
+                        {provided.placeholder}
+                  </Box>
+                )}
+            </Droppable>
+          </Grid>
+          <Grid item md={4} xs={10} sm={10}>
+              <div style={{ textAlign: 'center' }}><h1>Progress</h1></div>
+              <Droppable droppableId="ProgressList">
+              {
+                (provided) => (
+                  <Box
+                      sx={{
+                          width: 400,
+                          height: 600,
+                          backgroundColor: '#83C0FC'
+                      }}
+                      ref={provided.innerRef}
+                      {...provided.droppableProps}
+                  >
+                      {progressList.map((task, indx) => {
+                      return (
+                        <Draggable draggableId={task.id} index={indx} key={indx}>
+                          {
+                            (provided) => (
+                              <div key={indx} {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef} >
+                                <CardInner
+                                  name={task.name}
+                                  category={task.category}
+                                  status={task.status}
+                                  taskId={task.id}
+                                  handleDelete={onDelete}
+                                />
+                              </div>
+                            )
+                          }
+                        
+                        </Draggable>)})
+                        }
+                        {provided.placeholder}
+                  </Box>
+                )}
+            </Droppable>
+          </Grid>
+          <Grid item md={4} xs={10} sm={10}>
+              <div style={{ textAlign: 'center' }}><h1>Completed</h1></div>
+              <Droppable droppableId="CompletedList">
+              {
+                (provided) => (
+                  <Box
+                      sx={{
+                          width: 400,
+                          height: 600,
+                          backgroundColor: '#83C0FC'
+                      }}
+                      ref={provided.innerRef}
+                      {...provided.droppableProps}
+                  >
+                      {completedList.map((task, indx) => {
+                      return (
+                        <Draggable draggableId={task.id} index={indx} key={indx}>
+                          {
+                            (provided) => (
+                              <div key={indx} {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef} >
+                                <CardInner
+                                  name={task.name}
+                                  category={task.category}
+                                  status={task.status}
+                                  taskId={task.id}
+                                  handleDelete={onDelete}
+                                />
+                              </div>
+                            )
+                          }
+                        
+                        </Draggable>)})
+                        }
+                        {provided.placeholder}
+                  </Box>
+                )}
+            </Droppable>
+          </Grid>
+        </DragDropContext>
+      </Grid>
+    </div>
   );
 }

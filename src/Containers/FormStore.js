@@ -1,5 +1,4 @@
 import { collection, addDoc, getDocs, getDoc, doc, updateDoc, deleteDoc, query, where } from "firebase/firestore";
-
 import { db } from "../fireStore";
 
 export const addTask = async (itemDetails) => {

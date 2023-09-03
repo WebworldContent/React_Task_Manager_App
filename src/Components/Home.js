@@ -5,7 +5,8 @@ import {Stack, Button, Box, Grid} from '@mui/material';
 import { useNavigate } from "react-router-dom";
 import { MenuHeader } from "./Header";
 import { getAuth } from "firebase/auth";
-import CardElement from "./Card";
+
+import Card from './Card';
 
 export const Home = () => {
   const [searchedStatus, setSearchedStatus] = useState('');
@@ -25,9 +26,7 @@ export const Home = () => {
         <Box sx={{ flexGrow: 1 }}>
           <Grid container spacing={2} justifyContent="center" alignItems="center">
               <Grid item md={8} xs={10} sm={10}>
-                <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-                  <CardElement searchedStatus={searchedStatus} taskCategory={taskCategory} auth={auth}/>
-                </div>
+              
               </Grid>
               <Grid item md={8} xs={10} sm={10}>
                 <div style={{ marginTop: '40px' }}>
@@ -40,6 +39,9 @@ export const Home = () => {
                     <TaskCategory taskCategory={getTaskCategory} />
                   </Stack>
                 </div>
+              </Grid>
+              <Grid item md={8} xs={10} sm={10}>
+                <Card searchedStatus={searchedStatus} taskCategory={taskCategory} auth={auth}/>
               </Grid>
           </Grid>
         </Box>

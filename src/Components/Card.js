@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { getTaskStatus, getTasks, getTaskCategory } from '../Containers/FormStore';
 import { onAuthStateChanged } from "firebase/auth";
-import { Draggable, DragDropContext, Droppable } from "react-beautiful-dnd";
-import { CardInner } from './CardContent';
-import { Box, Grid } from '@mui/material';
+import { DragDropContext } from "react-beautiful-dnd";
+import { Grid } from '@mui/material';
+import { DragElement } from './DragElement';
 
 export default function CardElement({searchedStatus, taskCategory: searchedCategory, auth}) {
   const [tasks, setTasks] = useState([]);
@@ -94,117 +94,15 @@ export default function CardElement({searchedStatus, taskCategory: searchedCateg
         <DragDropContext onDragEnd={handleOnDragEnd}>
           <Grid item md={4} xs={10} sm={10}>
             <div style={{ textAlign: 'center' }}><h1>Todo</h1></div>
-              <Droppable droppableId="TodosList">
-              {
-                (provided) => (
-                  <Box
-                      sx={{
-                          width: 400,
-                          height: 600,
-                          backgroundColor: '#83C0FC'
-                      }}
-                      ref={provided.innerRef}
-                      {...provided.droppableProps}
-                  >
-                      {tasks.map((task, indx) => {
-                        console.log(`Debug: draggableId=${task.id}${indx}`);
-                      return (
-                        <Draggable draggableId={`${task.id}${indx}`} index={indx} key={indx}>
-                          {
-                            (provided) => (
-                              <div key={indx} {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef} >
-                                <CardInner
-                                  name={task.name}
-                                  category={task.category}
-                                  status={task.status}
-                                  taskId={task.id}
-                                  handleDelete={onDelete}
-                                />
-                              </div>
-                            )
-                          }
-                        
-                        </Draggable>)})}
-                        {provided.placeholder}
-                  </Box>
-                )}
-            </Droppable>
+            <DragElement droppableType='TodosList' lists={tasks} onDelete={onDelete}/>
           </Grid>
           <Grid item md={4} xs={10} sm={10}>
-              <div style={{ textAlign: 'center' }}><h1>Progress</h1></div>
-              <Droppable droppableId="ProgressList">
-              {
-                (provided) => (
-                  <Box
-                      sx={{
-                          width: 400,
-                          height: 600,
-                          backgroundColor: '#83C0FC'
-                      }}
-                      ref={provided.innerRef}
-                      {...provided.droppableProps}
-                  >
-                      {progressList.map((task, indx) => {
-                        console.log(`Debug: draggableId=${task.id}${indx}`);
-                      return (
-                        <Draggable draggableId={`${task.id}${indx}`} index={indx} key={indx}>
-                          {
-                            (provided) => (
-                              <div key={indx} {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef} >
-                                <CardInner
-                                  name={task.name}
-                                  category={task.category}
-                                  status={task.status}
-                                  taskId=''
-                                />
-                              </div>
-                            )
-                          }
-                        
-                        </Draggable>)})
-                        }
-                        {provided.placeholder}
-                  </Box>
-                )}
-            </Droppable>
+            <div style={{ textAlign: 'center' }}><h1>Progress</h1></div>
+            <DragElement droppableType='ProgressList' lists={progressList}/>
           </Grid>
           <Grid item md={4} xs={10} sm={10}>
-              <div style={{ textAlign: 'center' }}><h1>Completed</h1></div>
-              <Droppable droppableId="CompletedList">
-              {
-                (provided) => (
-                  <Box
-                      sx={{
-                          width: 400,
-                          height: 600,
-                          backgroundColor: '#83C0FC'
-                      }}
-                      ref={provided.innerRef}
-                      {...provided.droppableProps}
-                  >
-                      {completedList.map((task, indx) => {
-                        console.log(`Debug: draggableId=${task.id}${indx}`);
-                      return (
-                        <Draggable draggableId={`${task.id}${indx}`} index={indx} key={indx}>
-                          {
-                            (provided) => (
-                              <div key={indx} {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef} >
-                                <CardInner
-                                  name={task.name}
-                                  category={task.category}
-                                  status={task.status}
-                                  taskId=''
-                                />
-                              </div>
-                            )
-                          }
-                        
-                        </Draggable>)})
-                        }
-                        {provided.placeholder}
-                  </Box>
-                )}
-            </Droppable>
+            <div style={{ textAlign: 'center' }}><h1>Completed</h1></div>
+            <DragElement droppableType='CompletedList' lists={completedList}/>
           </Grid>
         </DragDropContext>
       </Grid>

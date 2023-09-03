@@ -3,17 +3,13 @@ import { Draggable, Droppable } from "react-beautiful-dnd";
 import { CardInner } from './CardContent';
 import { Box } from '@mui/material';
 
-export const DragElement = ({droppableType, lists, onDelete}) => {
+export const DragElement = ({droppableType, lists, onDelete, cardWidth, droppingAreaStyle}) => {
     return (
         <Droppable droppableId={droppableType}>
               {
                 (provided) => (
                   <Box
-                      sx={{
-                          width: 400,
-                          height: 600,
-                          backgroundColor: '#83C0FC'
-                      }}
+                      sx={droppingAreaStyle}
                       ref={provided.innerRef}
                       {...provided.droppableProps}
                   >
@@ -29,6 +25,7 @@ export const DragElement = ({droppableType, lists, onDelete}) => {
                                   status={task.status}
                                   taskId={onDelete ? task.id : ''}
                                   handleDelete={onDelete}
+                                  cardWidth={cardWidth}
                                 />
                               </div>
                             )

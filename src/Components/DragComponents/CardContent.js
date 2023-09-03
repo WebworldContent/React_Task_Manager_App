@@ -3,7 +3,7 @@ import { Card, CardActions, CardContent, Button, Typography } from '@mui/materia
 import { deleteTask } from '../../Containers/FormStore';
 import { useNavigate } from 'react-router-dom';
 
-export const CardInner = ({name, status, category, taskId, handleDelete}) => {
+export const CardInner = ({name, status, category, taskId, handleDelete, cardWidth}) => {
 
     const naviagate = useNavigate();
 
@@ -14,8 +14,15 @@ export const CardInner = ({name, status, category, taskId, handleDelete}) => {
       }
     };
 
+    const cardStyle = {
+      margin: 1,
+      ...(cardWidth ? {
+        width: cardWidth
+      } : {})
+    };
+
     return (
-      <Card sx={{ minWidth: 275, margin: 1 }}>
+      <Card sx={cardStyle}>
         <CardContent>
             <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
             <Button color="info">{status}</Button>

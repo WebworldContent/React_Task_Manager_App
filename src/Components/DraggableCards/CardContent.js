@@ -1,6 +1,6 @@
 import React from "react";
 import { Card, CardActions, CardContent, Button, Typography } from '@mui/material';
-import { deleteTask } from '../Containers/FormStore';
+import { deleteTask } from '../../Containers/FormStore';
 import { useNavigate } from 'react-router-dom';
 
 export const CardInner = ({name, status, category, taskId, handleDelete}) => {

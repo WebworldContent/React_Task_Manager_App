@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { MenuHeader } from "./Header";
 import { getAuth } from "firebase/auth";
 
-import Card from './Card';
+import Card from './DraggableCards/Card';
 
 export const Home = () => {
   const [searchedStatus, setSearchedStatus] = useState('');
@@ -26,7 +26,7 @@ export const Home = () => {
         <Box sx={{ flexGrow: 1 }}>
           <Grid container spacing={2} justifyContent="center" alignItems="center">
               <Grid item md={8} xs={10} sm={10}>
-              
+                
               </Grid>
               <Grid item md={8} xs={10} sm={10}>
                 <div style={{ marginTop: '40px' }}>

@@ -28,6 +28,22 @@ export const getTasks = async (uid) => {
   }
 };
 
+export const getStageAreaTasks = async (uid) => {
+  try {
+    const taskArray = [];
+    const q = query(collection(db, "tasks"), where("userId", "==", uid), where("status", "==", ""));
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      const updateTask = doc.data();
+      updateTask['id'] = doc.id;
+      taskArray.push(updateTask);
+    });
+    return taskArray;
+  } catch(err) {
+    console.error("Error getting document", err);
+  }
+};
+
 export const getTask = async (documentId) => {
   try {
     const docRef = doc(db, 'tasks', documentId);
@@ -57,6 +73,18 @@ export const updateTask = async (itemDetails) => {
     console.error("Error updating document", err);
   }
 };
+
+export const updateTaskStatus = async (documentId, newStatus) => {
+  try {
+    const docRef = doc(db, 'tasks', documentId);
+    await updateDoc(docRef, {
+      status: newStatus
+    });
+    console.log('document updated!');
+  } catch (err) {
+    console.error("Error updating document", err);
+  }
+};  
 
 export const deleteTask = async(documentId) => {
   try {

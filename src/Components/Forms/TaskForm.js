@@ -10,7 +10,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 export const TaskForm = () => {
   const [error, setError] = useState({});
   const [name, setName] = useState('');
-  const [status, setStatus] = useState('todo');
+  const [status, setStatus] = useState('');
   const [category, setCategory] = useState('');
   const navigate = useNavigate();
   const {documentId} = useParams();
@@ -27,11 +27,6 @@ export const TaskForm = () => {
       getTaskDocIdBased();
     }
   }, [documentId]);
-
-  const onStatusChange = (event) => {
-    const {value} = event.target;
-    setStatus(value);
-  };
 
   const onCategoryChange = (event) => {
     const {name, value} = event.target;
@@ -108,19 +103,6 @@ export const TaskForm = () => {
             onChange={onNameChange}
             variant="outlined"
           />
-        </FormControl>
-        
-        <FormControl fullWidth margin="normal">
-          <InputLabel>Status</InputLabel>
-          <Select
-            label="Status"
-            onChange={onStatusChange}
-            value={status}
-            >
-            <MenuItem value="todo">Todo</MenuItem>
-            <MenuItem value="in_progress">In Progress</MenuItem>
-            <MenuItem value="completed">Completed</MenuItem>
-          </Select>
         </FormControl>
 
         <FormControl fullWidth margin="normal">

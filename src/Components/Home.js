@@ -5,7 +5,7 @@ import {Stack, Button, Box, Grid} from '@mui/material';
 import { useNavigate } from "react-router-dom";
 import { MenuHeader } from "./Header";
 import { getAuth } from "firebase/auth";
-import { getTaskStatus, getTasks, getTaskCategory } from '../Containers/FormStore';
+import { getTaskStatus, getTasks, getTaskCategory, updateTaskStatus, getStageAreaTasks } from '../Containers/FormStore';
 import { onAuthStateChanged } from "firebase/auth";
 import { DragDropContext } from "react-beautiful-dnd";
 
@@ -28,15 +28,27 @@ export const Home = () => {
     setDataChanged(dataChanged);
   };
 
+  const getStageAreaData = useCallback(async () => {
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const uid = user.uid;
+        const taskData = await getStageAreaTasks(uid);
+        setTasks(taskData);
+      }
+    });
+    
+  }, [auth]);
+
   const getTaskData = useCallback(async () => {
     onAuthStateChanged(auth, async (user) => {
       if (user) {
         const uid = user.uid;
         const taskData = await getTasks(uid);
-        setTasks(taskData);
+        setTodoList(taskData.filter(data => data.status === 'todo'));
+        setProgressList(taskData.filter(data => data.status === 'in_progress'));
+        setCompletedList(taskData.filter(data => data.status === 'completed'));
       }
     });
-    
   }, [auth]);
 
   const getTasksStatusWise = useCallback(async () => {
@@ -52,23 +64,25 @@ export const Home = () => {
   useEffect(() => {
     (async () => {
       try {
+        await getTaskData();
+
         if (searchedStatus) {
           await getTasksStatusWise();
         } else if (taskCategory) {
           await getTasksCategoryWise();
         } else {
-          await getTaskData();
+          await getStageAreaData();
         }
         setDataChanged(false);
       } catch(err) {
         throw new Error(err);
       }
     })();
-  }, [getTaskData, dataChanged, getTasksStatusWise, searchedStatus, getTasksCategoryWise, taskCategory]);
+  }, [getTaskData, getStageAreaData, dataChanged, getTasksStatusWise, searchedStatus, getTasksCategoryWise, taskCategory]);
 
   const handleOnDragEnd = (result) => {
     const {source, destination} = result;
-    console.log(result);
+
     if (!destination) return;
 
     if (destination.droppableId === source.droppableId && destination.index === source.index) return;
@@ -94,16 +108,21 @@ export const Home = () => {
     }
 
     if (destination.droppableId === 'TodosList') {
+      updateTaskStatus(add.id, 'todo');
       todo.splice(destination.index, 0, add);
     } else if (destination.droppableId === 'ProgressList') {
+      updateTaskStatus(add.id, 'in_progress');
       progress.splice(destination.index, 0, add);
     } else {
+      updateTaskStatus(add.id, 'completed');
       completed.splice(destination.index, 0, add);
     }
 
+    setTasks(active);
     setTodoList(todo);
     setProgressList(progress);
     setCompletedList(completed);
+    setDataChanged(true);
 
   };
 

@@ -10,6 +10,7 @@ import { initializeApp } from "firebase/app";
 const firebaseConfig = {
   apiKey: "AIzaSyAtiCTnPZu8RGIWHm08rxdBd-P0MoVa2Iw",
   authDomain: "my-react-app-38413.firebaseapp.com",
+  databaseURL: "https://my-react-app-38413-default-rtdb.firebaseio.com",
   projectId: "my-react-app-38413",
   storageBucket: "my-react-app-38413.appspot.com",
   messagingSenderId: "441969352449",

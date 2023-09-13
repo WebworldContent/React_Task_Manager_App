@@ -24,19 +24,17 @@ export const CardInner = ({name, status, category, taskId, handleDelete, cardWid
     return (
       <Card sx={cardStyle}>
         <CardContent>
-            <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-            <Button color="info">{status}</Button>
-            </Typography>
-            <Typography sx={{ mb: 1.5 }} color="text.secondary">
-            {name}
-            </Typography>
-            <Typography variant="body2">
-            <Button color="success">
-              {category}
-            </Button>
-            </Typography>
+          <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+            <h2 style={{color: '#048ee9', textTransform: 'capitalize', fontFamily: 'cursive'}}>{name}</h2>
+          </Typography>
+          <Typography variant="body2">
+            <h3>{category}</h3>
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            {status}
+          </Typography>
         </CardContent>
-        <CardActions>
+        <CardActions style={{ display: 'flex', justifyContent: 'space-between' }}>
           <span style={{ marginLeft: '0px' }}>
             {taskId ? <Button color="secondary" onClick={() => naviagate(`/add-task/${taskId}`)} variant="contained">Edit</Button> : ''}
           </span>

@@ -1,9 +1,10 @@
 import React from "react";
+import dayjs from "dayjs";
 import { Card, CardActions, CardContent, Button, Typography } from '@mui/material';
 import { deleteTask } from '../../Containers/FormStore';
 import { useNavigate } from 'react-router-dom';
 
-export const CardInner = ({name, status, category, taskId, handleDelete, cardWidth}) => {
+export const CardInner = ({name, status, category, taskId, handleDelete, cardWidth, taskEstimate, createdAt}) => {
 
     const naviagate = useNavigate();
 
@@ -21,6 +22,31 @@ export const CardInner = ({name, status, category, taskId, handleDelete, cardWid
       } : {})
     };
 
+    const getTimeDifference = (startDate, endDate) => {
+      const start = dayjs(startDate);
+      const end = dayjs(endDate);
+      const duration = end.diff(start, 'minute'); // Get the difference in minutes
+
+      if (!duration) {
+        return;
+      }
+    
+      if (duration >= 1440) {
+        // If the difference is 1440 minutes or more (1 day or more)
+        const days = Math.floor(duration / 1440);
+        return `Time remaining ${days} days`;
+      } else if (duration >= 60) {
+        // If the difference is 60 minutes or more (1 hour or more)
+        const hours = Math.floor(duration / 60);
+        return `Time remaining ${hours} hrs`;
+      } else {
+        // If the difference is less than 60 minutes
+        return `Time remaining ${duration} min`;
+      }
+    };
+
+    const startDate = new Date(createdAt.seconds * 1000 + createdAt.nanoseconds / 1000000);
+
     return (
       <Card sx={cardStyle}>
         <CardContent>
@@ -29,6 +55,9 @@ export const CardInner = ({name, status, category, taskId, handleDelete, cardWid
           </Typography>
           <Typography variant="body2">
             <h3>{category}</h3>
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            <h3 style={{fontFamily: 'auto'}}>{getTimeDifference(startDate, taskEstimate)}</h3>
           </Typography>
           <Typography variant="body2" color="text.secondary">
             {status}

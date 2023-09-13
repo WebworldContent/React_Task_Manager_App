@@ -5,13 +5,18 @@ import { addTask, getTask, updateTask } from "../../Containers/FormStore";
 import { useNavigate, useParams } from "react-router-dom";
 import Alert from '@mui/material/Alert';
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs from 'dayjs';
+import {DemoItem } from '@mui/x-date-pickers/internals/demo';
 
 export const TaskForm = () => {
   const [error, setError] = useState({});
   const [name, setName] = useState('');
   const [status, setStatus] = useState('');
   const [category, setCategory] = useState('');
+  const [taskEstimate, setTaskEstimate] = useState(dayjs());
   const navigate = useNavigate();
   const {documentId} = useParams();
 
@@ -32,6 +37,11 @@ export const TaskForm = () => {
     const {name, value} = event.target;
     setError((prevError) => ({...prevError, [name]: ''}));
     setCategory(value);
+  };
+
+  const handleDateAccept = (date) => {
+    const extractedDate = date.format();
+    setTaskEstimate(extractedDate);
   };
 
   const errorCheck = (name, category) => {
@@ -76,7 +86,7 @@ export const TaskForm = () => {
         if (documentId) {
           updateTask({name, status, category, documentId});
         } else {
-          addTask({name, status, category, userId});
+          addTask({name, status, category, userId, taskEstimate});
         }
 
         navigate('/');
@@ -118,23 +128,29 @@ export const TaskForm = () => {
             <MenuItem value="others">Others</MenuItem>
           </Select>
         </FormControl>
-        
-          <Box>
-            <Grid container spacing={2}>
-              <Grid item xs={6} md={6} sm={6}>
-                <Button type="submit" variant="contained" color="primary" disabled={!!errorExist(error).length}>
-                  Submit
-                </Button>
-              </Grid>
-              <Grid item xs={6} md={6} sm={6}>
-                <div style={{ textAlign: 'end' }}>
-                  <Button onClick={() => navigate('/')} variant="contained" color="primary" >
-                    Back
-                  </Button>
-                </div>
-              </Grid>
+
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DemoItem label="Completion Estimate">
+            <DatePicker defaultValue={taskEstimate} disablePast onChange={handleDateAccept} />
+          </DemoItem>
+        </LocalizationProvider>
+
+        <Box style={{marginTop: '10px', fontFamily: 'inherit', color: '#e0e0e0' }}>
+          <Grid container spacing={2}>
+            <Grid item xs={6} md={6} sm={6}>
+              <Button type="submit" variant="contained" color="primary" disabled={!!errorExist(error).length}>
+                Submit
+              </Button>
             </Grid>
-          </Box>
+            <Grid item xs={6} md={6} sm={6}>
+              <div style={{ textAlign: 'end' }}>
+                <Button onClick={() => navigate('/')} variant="contained" color="primary" >
+                  Back
+                </Button>
+              </div>
+            </Grid>
+          </Grid>
+        </Box>
         
       </form>
     </Container>

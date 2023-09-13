@@ -26,6 +26,8 @@ export const DragElement = ({droppableType, lists, onDelete, cardWidth, dropping
                                   taskId={onDelete ? task.id : ''}
                                   handleDelete={onDelete}
                                   cardWidth={cardWidth}
+                                  taskEstimate={task.taskEstimate}
+                                  createdAt={task.createdAt}
                                 />
                               </div>
                             )

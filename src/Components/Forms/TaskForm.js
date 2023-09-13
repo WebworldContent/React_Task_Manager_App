@@ -84,7 +84,7 @@ export const TaskForm = () => {
         }
 
         if (documentId) {
-          updateTask({name, status, category, documentId});
+          updateTask({name, status, category, documentId, taskEstimate});
         } else {
           addTask({name, status, category, userId, taskEstimate});
         }

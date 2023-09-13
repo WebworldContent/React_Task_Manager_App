@@ -66,7 +66,8 @@ export const updateTask = async (itemDetails) => {
     await updateDoc(docRef, {
       name: itemDetails.name,
       status: itemDetails.status,
-      category: itemDetails.category
+      category: itemDetails.category,
+      taskEstimate: itemDetails.taskEstimate
     });
     console.log('document updated!');
   } catch (err) {

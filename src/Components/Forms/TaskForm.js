@@ -82,7 +82,7 @@ export const TaskForm = () => {
           setError((error) => ({...error, ...newErrors}));
           return;
         }
-
+  
         if (documentId) {
           updateTask({name, status, category, documentId, taskEstimate});
         } else {

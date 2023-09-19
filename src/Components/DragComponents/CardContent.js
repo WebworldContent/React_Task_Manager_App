@@ -77,7 +77,7 @@ export const CardInner = ({name, status, category, taskId, handleDelete, cardWid
           </span>
         </CardActions>
       </Card>
-      <ListDetail onListClick={isListOpen} isListOpen={(data) => setIsListOpen(data)}/>
+      <ListDetail openList={isListOpen} isListOpen={(data) => setIsListOpen(data)}/>
       </>
     );
 };

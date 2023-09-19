@@ -15,12 +15,12 @@ const style = {
   p: 4,
 };
 
-const ListDetail = ({onListClick, isListOpen}) => {
+const ListDetail = ({openList, isListOpen}) => {
   const [open, setOpen] = useState(false);
   
   useEffect(() => {
-    setOpen(onListClick);
-  }, [onListClick]);
+    setOpen(openList);
+  }, [openList]);
   
   const handleClose = () => {
     setOpen(false);

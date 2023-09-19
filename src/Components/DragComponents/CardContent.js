@@ -1,12 +1,13 @@
-import React from "react";
+import React, {useState} from "react";
 import dayjs from "dayjs";
 import { Card, CardActions, CardContent, Button, Typography } from '@mui/material';
 import { deleteTask } from '../../Containers/FormStore';
 import { useNavigate } from 'react-router-dom';
+import ListDetail from "../ListInfo/ListDetail";
 
 export const CardInner = ({name, status, category, taskId, handleDelete, cardWidth, taskEstimate, createdAt}) => {
-
     const naviagate = useNavigate();
+    const [isListOpen, setIsListOpen] = useState(false);
 
     const handleTaskDeletion = async (docId) => {
       if (docId) {
@@ -48,7 +49,8 @@ export const CardInner = ({name, status, category, taskId, handleDelete, cardWid
     const startDate = new Date(createdAt.seconds * 1000 + createdAt.nanoseconds / 1000000);
 
     return (
-      <Card sx={cardStyle}>
+      <>
+      <Card sx={cardStyle} onClick={() => setIsListOpen(true)}>
         <CardContent>
           <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
             <h2 style={{color: '#048ee9', textTransform: 'capitalize', fontFamily: 'cursive'}}>{name}</h2>
@@ -56,22 +58,27 @@ export const CardInner = ({name, status, category, taskId, handleDelete, cardWid
           <Typography variant="body2">
             <h3>{category}</h3>
           </Typography>
-          <Typography variant="body2" color="text.secondary">
+          {status !== 'completed' ? <Typography variant="body2" color="text.secondary">
             <h3 style={{fontFamily: 'auto'}}>{getTimeDifference(startDate, taskEstimate)}</h3>
-          </Typography>
+          </Typography> : ''}
           <Typography variant="body2" color="text.secondary">
             {status}
           </Typography>
         </CardContent>
         <CardActions style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <span style={{ marginLeft: '0px' }}>
+        <span style={{ marginLeft: '0px' }}>
             {taskId ? <Button color="secondary" onClick={() => naviagate(`/add-task/${taskId}`)} variant="contained">Edit</Button> : ''}
           </span>
+          {/* <span style={{ marginLeft: '0px' }}>
+            {taskId ? <Button color="primary"   variant="contained">Open</Button> : ''}
+          </span> */}
           <span style={{ marginLeft: '110px' }}>
             {taskId ? <Button color="error" variant="contained" onClick={() => handleTaskDeletion(taskId)}>Delete</Button> : ''}
           </span>
         </CardActions>
       </Card>
+      <ListDetail onListClick={isListOpen} isListOpen={(data) => setIsListOpen(data)}/>
+      </>
     );
 };
 

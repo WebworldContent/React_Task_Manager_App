@@ -6,15 +6,6 @@ SiteLink:- https://my-react-app-38413.web.app/
 
 Welcome to the Task Management App project! This web application is built using React.js, Material-UI (MUI), Firebase as a Backend-as-a-Service (BaaS) for data storage and authentication, and leverages JavaScript for functionality, including drag-and-drop capabilities for task management.
 
-**Table of Contents**
-<u>**Introduction**</u>
-<u>**Features**</u>
-<u>**Technologies Used**</u>
-<u>**Installation**</u>
-<u>**Usage**</u>
-<u>**Contributing**</u>
-<u>**License**</u>
-
 **Introduction**
 The Task Management System is designed to help users organize their tasks efficiently. To use this system, users must register and log in. Once logged in, users can create, read, update, and delete tasks. Tasks can be categorized, and they can be moved between three bases: Todo, Progress, and Completed, using a drag-and-drop interface.
 
